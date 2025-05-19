@@ -13,15 +13,13 @@ body {
 
 .container {
   width: 100%; /* Ensure it takes the full width of its parent (body) */
-  /* REMOVED: max-width: 800px; */ /* Removed to allow full screen width */
+  /* REMOVED max-width here to allow full width by default */
   margin: 20px auto; /* Center the container and add vertical margin */
   padding: 30px; /* More padding inside the container */
   background-color: #fff; /* White background for the container */
   border: 1px solid #ddd; /* Lighter border */
   border-radius: 8px; /* More rounded corners */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  /* Removed display: flex and flex-direction: column here */
-  /* Added padding-bottom to make space for the fixed footer */
   padding-bottom: 80px; /* Adjust based on the height of your pagination footer */
   box-sizing: border-box;
   position: relative; /* Needed for absolute positioning of potential future elements */
@@ -46,17 +44,19 @@ h2 {
 .search-section {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
   margin-bottom: 20px;
+  align-items: center; /* Vertically align items in the flex container */
 }
 
 .search-section input[type="text"] {
-  flex-grow: 1;
+  flex-grow: 1; /* Allows inputs to grow and take available space */
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
   box-sizing: border-box;
+  min-width: 150px; /* Ensure inputs have a minimum width */
 }
 
 .search-section button {
@@ -67,6 +67,7 @@ h2 {
   font-size: 1rem;
   transition: background-color 0.2s ease;
   box-sizing: border-box;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
 #search-btn {
@@ -131,7 +132,6 @@ h2 {
   border-radius: 4px;
   overflow: hidden;
   margin-top: 0;
-  /* --- CHANGES FOR SCROLLING LIST --- */
   max-height: 400px; /* Set a max height for the list */
   overflow-y: auto; /* Add vertical scroll when content exceeds max-height */
   margin-bottom: 20px; /* Add space below the list */
@@ -145,8 +145,8 @@ h2 {
   padding: 12px 15px;
   border-bottom: 1px solid #eee;
   background-color: #fff;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-wrap: wrap; /* Allows items inside product list to wrap */
+  gap: 10px; /* Gap between items in the list */
   cursor: pointer; /* Indicate clickable items */
   transition: background-color 0.2s ease; /* Hover effect */
 }
@@ -159,32 +159,33 @@ h2 {
     background-color: #f0f0f0; /* Light grey on hover */
 }
 
-
 /* Style for individual product details within the list item */
 .product span {
   word-break: break-word;
+  /* Allow items to take necessary width, but prevent excessive growth */
+  flex-basis: auto;
 }
 
 .product-item-number {
     font-weight: bold;
-    color: #555;
+    color: #007bff;
     flex-shrink: 0;
     margin-right: 10px; /* Add space after item number */
-}
+} 
 
 .product-description {
-  flex-grow: 1;
-  min-width: 150px;
+  flex-grow: 1; /* Allow description to take up remaining space */
+  min-width: 150px; /* Minimum width for description before wrapping */
   margin-right: 10px; /* Add space after description */
 }
 
 .product-price,
-.product-great-deals-price,
-.product-item-number { /* Include other numeric/short items */
+.product-great-deals-price { /* Include other numeric/short items */
   font-weight: bold;
   color: #007bff;
   flex-shrink: 0;
-  margin-left: auto; /* Push prices to the right */
+   /* Use margin-left for spacing and alignment, flex-basis ensures they don't take unnecessary space */
+  margin-left: 10px;
 }
 
 .product-great-deals-price {
@@ -250,6 +251,8 @@ h2 {
   align-items: center;
   z-index: 1000;
   backdrop-filter: blur(5px);
+  padding: 10px; /* Add some padding to the overlay */
+  box-sizing: border-box;
 }
 
 .product-details-modal {
@@ -257,11 +260,12 @@ h2 {
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  max-width: 800px; /* Adjusted max-width for two larger columns */
-  width: 95%; /* Allow modal to take up more width */
+  max-width: 800px; /* Max width for the modal */
+  width: 100%; /* Make modal take full width on smaller screens */
   position: relative;
-  max-height: 90vh;
+  max-height: 95vh; /* Allow modal to take up more vertical space */
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .product-details-modal h2 {
@@ -280,58 +284,61 @@ h2 {
   border: none;
   cursor: pointer;
   color: #888;
+  z-index: 1010; /* Ensure close button is above content */
 }
 
 .product-details-modal .close-btn:hover {
   color: #555;
 }
 
-/* Updated grid layout for details - now contains two main columns */
+/* Updated grid layout for details - using grid for better control */
 .details-grid {
-  display: grid; /* Use CSS Grid for main layout */
-  grid-template-columns: 1fr 1fr; /* Two equal columns for col-1 and col-2 */
-  gap: 20px  50px; /* Gap between the two main columns */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid columns */
+  gap: 20px; /* Gap between grid items */
 }
 
-/* Styles for the left and right columns */
 .col-1, .col-2 {
-    display: grid; /* Use grid within each column for labels and values */
-    grid-template-columns: auto 1fr; /* Inner grid: Label (auto), Value (take space) */
-    gap: 10px; /* Gap between rows within each column */
+    /* Remove grid display here, let the details-grid handle the layout */
+    display: block; /* Ensure they behave as blocks */
 }
 
-
-/* Ensures elements within detail-column are placed directly in the inner grid */
 .detail-column {
-  display: contents;
+    display: flex; /* Use flexbox for label and value within a detail row */
+    justify-content: space-between; /* Space out label and value */
+    gap: 10px; /* Gap between label and value */
+    flex-wrap: wrap; /* Allow label and value to wrap */
 }
+
 
 .detail-label {
   font-weight: bold;
   color: #333;
-  padding-right: 10px; /* Space after label */
-  word-break: break-word;
-  /* No need for grid-column here, as display: contents handles it */
+  flex-shrink: 0; /* Prevent label from shrinking */
 }
 
 .detail-header {
   font-weight: bold;
   color: #c60c0c;
-  padding-right: 10px; /* Space after label */
-  word-break: break-word;
-  /* No need for grid-column here, as display: contents handles it */
+  flex-basis: 100%; /* Make header take full width */
+  margin-bottom: 5px; /* Space below header */
 }
+
 
 .detail-value {
   color: #555;
+  text-align: right; /* Align value to the right */
+  flex-grow: 1; /* Allow value to grow and take space */
   word-break: break-word;
-   /* No need for grid-column here, as display: contents handles it */
 }
 
-/* Style for detail columns that should span across all columns within their parent (col-1 or col-2) */
-.detail-column-full .detail-label,
+/* Style for detail columns that should span across all columns within their parent (details-grid) */
+.detail-column-full {
+    grid-column: span full-grid-area / span full-grid-area; /* Span across the grid */
+}
+
 .detail-column-full .detail-value {
-    grid-column: span 2; /* Make label and value span both columns in the inner grid */
+    text-align: left; /* Align full-width values to the left */
 }
 
 
@@ -358,22 +365,21 @@ h2 {
 } */
 
 /* --- Pagination Styles --- */
-#pagination-controls { /* Changed from class to ID selector for specificity */
-    /* --- CHANGES FOR FIXED FOOTER --- */
-    position: fixed; /* Fix the position relative to the viewport */
-    bottom: 0; /* Position at the bottom */
-    left: 0; /* Align to the left edge */
-    width: 100%; /* Span the full width */
-    background-color: #f8f9fa; /* Light background for the footer */
-    padding: 15px 20px; /* Add padding inside the footer */
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Add a shadow at the top */
-    z-index: 999; /* Ensure it's above other content */
-    /* --- Flexbox for centering content (already present) --- */
+#pagination-controls {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 999;
     display: flex;
-    justify-content: center; /* Center the pagination controls */
+    justify-content: center;
     align-items: center;
-    gap: 10px; /* Space between elements */
-    box-sizing: border-box; /* Include padding in the total width */
+    gap: 10px;
+    box-sizing: border-box;
+    flex-wrap: wrap; /* Allow controls to wrap on smaller screens */
 }
 
 .pagination-controls button {
@@ -398,4 +404,148 @@ h2 {
 #page-info {
     font-weight: bold;
     color: #555;
+    flex-shrink: 0;
+}
+
+
+/* --- Media Queries for Responsiveness --- */
+
+/* Mobile devices (portrait and landscape) */
+@media (max-width: 767px) {
+    .container {
+        padding: 15px; /* Reduce container padding on smaller screens */
+        margin: 10px auto; /* Adjust margin */
+    }
+
+    h1 {
+        font-size: 1.8em; /* Adjust heading size */
+        margin-bottom: 15px;
+    }
+
+    .search-section {
+        flex-direction: column; /* Stack search inputs and buttons vertically */
+        gap: 10px;
+    }
+
+    .search-section input[type="text"],
+    .search-section button {
+        width: 100%; /* Make search elements full width */
+        min-width: unset; /* Remove minimum width constraint */
+    }
+
+    .product {
+        flex-direction: column; /* Stack product list items vertically */
+        align-items: flex-start; /* Align items to the start */
+        gap: 8px; /* Adjust gap */
+        padding: 10px 15px; /* Adjust padding */
+    }
+
+    .product span {
+        flex-basis: 100%; /* Make each span take full width when stacked */
+        text-align: left; /* Align text to the left */
+        margin: 0; /* Remove margins */
+    }
+
+    .product-item-number {
+         margin-bottom: 4px; /* Add space below item number */
+    }
+
+    .product-price,
+    .product-great-deals-price {
+         margin-top: 4px; /* Add space above prices */
+         margin-left: 0; /* Remove left margin */
+    }
+
+
+    .product-details-modal {
+        padding: 20px; /* Adjust modal padding */
+        max-height: 90vh; /* Adjust max height */
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr; /* Stack detail columns in the modal */
+        gap: 15px; /* Adjust gap */
+    }
+
+    .detail-column {
+        flex-direction: column; /* Stack label and value within detail rows */
+        gap: 5px; /* Adjust gap */
+    }
+
+    .detail-value {
+        text-align: left; /* Align values to the left when stacked */
+    }
+
+    .detail-header {
+         margin-bottom: 0; /* Remove extra space below header when stacked */
+    }
+
+    #pagination-controls {
+        padding: 10px; /* Adjust pagination padding */
+        gap: 5px; /* Adjust gap */
+        justify-content: space-between; /* Space out controls */
+    }
+
+     #page-info {
+        flex-basis: 100%; /* Allow page info to take full width if wrapped */
+        text-align: center; /* Center page info */
+        margin-top: 5px; /* Add some space above page info */
+    }
+}
+
+/* Tablet devices */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        padding: 25px; /* Adjust container padding */
+    }
+
+    h1 {
+        font-size: 2em; /* Adjust heading size */
+    }
+
+    .search-section input[type="text"] {
+        min-width: 200px; /* Adjust minimum width for inputs */
+    }
+
+    .product {
+        gap: 15px; /* Adjust gap in product list */
+    }
+
+    .details-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust grid columns for tablets */
+        gap: 25px; /* Adjust gap */
+    }
+
+    .product-details-modal {
+        max-width: 700px; /* Adjust modal max width for tablets */
+    }
+}
+
+/* Desktop devices and larger */
+@media (min-width: 1025px) {
+    .container {
+        padding: 30px; /* Default padding */
+        max-width: none; /* REMOVED max-width for larger screens */
+    }
+
+    h1 {
+        font-size: 2.5em; /* Default heading size */
+    }
+
+    .search-section input[type="text"] {
+         min-width: 250px; /* Default minimum width */
+    }
+
+     .product {
+        gap: 10px; /* Default gap */
+    }
+
+    .details-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Default grid columns */
+        gap: 50px; /* Default gap */
+    }
+
+     .product-details-modal {
+        max-width: 800px; /* Default modal max width */
+    }
 }
