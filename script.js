@@ -26,7 +26,6 @@ const detailGreatDealCostElement = document.getElementById('detail-great-deal-co
 const detailSalvageCostPercentElement = document.getElementById('detail-salvage-cost-percent');
 const detailCommentsElement = document.getElementById('detail-comments');
 const detailCostcoPriceElement = document.getElementById('detail-costco-price');
-const detailSalvagePercentElement = document.getElementById('detail-salvage-percent'); // Added Salvage %
 
 // Added references for the new detail elements based on the image
 const detailCategory10Element = document.getElementById('detail-category-10');
@@ -190,35 +189,9 @@ const firebaseConfig = {
             }
         }
 
-
-
-      // // Display percentages %
-      // if (product["GREAT PRICE WITH 10% FROM COSTCO"] !== undefined) { // Check if GREAT DEALS PRICE COST exists
-      //   const productPercentageElement = document.createElement('span');
-      //   productPercentageElement.classList.add('product-great-deals-price');
-      //   // Ensure it's a number before toFixed
-      //   const greatDealsPrice = typeof product["GREAT PRICE WITH 10% FROM COSTCO"] === 'number' ? product["GREAT DEALS PRICE COST"] : parseFloat(product["GREAT DEALS PRICE COST"]);
-      //   if (!isNaN(greatDealsPrice)) {
-      //     productPercentageElement.textContent = greatDealsPrice.toFixed(2); 
-      //       productItem.appendChild(productPercentageElement);
-      //   }
-      // }
-
-
-        // Add Delete button (if needed)
-        // const deleteBtn = document.createElement('button');
-        // deleteBtn.textContent = 'Delete';
-        // deleteBtn.classList.add('delete-btn');
-        // deleteBtn.addEventListener('click', (event) => {
-        //    event.stopPropagation(); // Prevent the click on the button from triggering the list item click
-        //    removeProduct(product.id);
-        // });
-        // productItem.appendChild(deleteBtn);
-
-
         // Append the complete product item to the list
         productList.appendChild(productItem);
-      }
+  }
 
   // Function to clear the product list in the UI
   function clearProductList() {
@@ -271,14 +244,13 @@ const firebaseConfig = {
           // Populate the existing detail elements
           detailDescriptionElement.textContent = product.DESCRIPTION || 'N/A';
           detailItemNumberElement.textContent = product.ITEM !== undefined ? product.ITEM : 'N/A';
-
+         
           // Format and display numeric values, handle missing data
           detailGreatDealCostElement.textContent = product["GREAT DEALS PRICE COST"] !== undefined ? `$${parseFloat(product["GREAT DEALS PRICE COST"]).toFixed(2)}` : 'N/A';
           detailSalvageCostPercentElement.textContent = product["SALVAGE %"] !== undefined ? `${parseFloat(product["SALVAGE %"])}%` : 'N/A';
-          detailCommentsElement.textContent = product.comments || 'N/A'; // Assuming 'comments' is the key
+          detailCommentsElement.textContent = product["comments "] || 'N/A'; // Assuming 'comments' is the key
           detailCostcoPriceElement.textContent = product["SELL PRICE"] !== undefined ? `$${parseFloat(product["SELL PRICE"]).toFixed(2)}` : 'N/A'; // Assuming Sell Price is Costco Price
-          detailSalvagePercentElement.textContent = product["SALVAGE %"] !== undefined ? `${parseFloat(product["SALVAGE %"])}%` : 'N/A'; // Duplicate Salvage %, adjust if needed
-
+          
           // Populate the new detail elements based on the image data
           // You will need to replace the placeholder property names (e.g., product.category10, product.value10)
           // with the actual property names from your Firebase data.
